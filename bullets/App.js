@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, ListView, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ListView, Button, AlertIOS } from 'react-native';
 
 // Import custom Components
 const TitleBar = require('./components/TitleBar');
@@ -14,7 +14,7 @@ const config = {
   databaseURL: "https://bullets-d19a6.firebaseio.com",
   storageBucket: "bullets-d19a6.appspot.com",
 };
-const firebaseApp = firebase.initializeApp(config);
+firebase.initializeApp(config);
 
 // Begin App
 export default class App extends React.Component {
@@ -28,16 +28,34 @@ export default class App extends React.Component {
             })
         };
         // Database reference
-        this.itemsRef = firebaseApp.database().ref('items');
+        this.itemsRef = firebase.database().ref();
     }
 
     componentDidMount(){
+        console.log('componentDidMount');
         this.watchForItems(this.itemsRef);
     }
 
     _renderItem(item) {
         return(
             <ListItem item={item} onpress={() => {}} />
+        );
+    }
+
+    _addItem(){
+        console.log('Add Entry pressed');
+        AlertIOS.prompt(
+            'New item',
+            null,
+            [
+                {
+                    text: 'Add',
+                    onPress: (text) => {
+                        this.itemsRef.push({title: text})
+                    }
+                }
+            ],
+            'plain-text'
         );
     }
 
@@ -65,7 +83,7 @@ export default class App extends React.Component {
             <View style={styles.container}>
                 <TitleBar title="Bullets" />
                 <ListView dataSource={this.state.dataSource} renderRow={this._renderItem.bind(this)} />
-                <SubmitButton title="Add Entry" onpress={() => {}} />
+                <SubmitButton title="Add Entry" onpress={this._addItem.bind(this)} />
             </View>
         );
     }
