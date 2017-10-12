@@ -37,8 +37,27 @@ export default class App extends React.Component {
     }
 
     _renderItem(item) {
+
+        const onPress = () => {
+            AlertIOS.prompt(
+                'Mark Done',
+                null,
+                [
+                    {
+                        text: 'Done',
+                        onPress: (text) => this.itemsRef.child(item._key).remove()
+                    },
+                    {
+                        text: 'Cancel',
+                        onPress: (text) => console.log('Canceled')
+                    }
+                ],
+                'default'
+            );
+        };
+
         return(
-            <ListItem item={item} onpress={() => {}} />
+            <ListItem item={item} onPress={onPress} />
         );
     }
 

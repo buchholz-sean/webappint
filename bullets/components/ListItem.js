@@ -7,10 +7,8 @@ class ListItem extends React.Component {
     render() {
         return (
             <TouchableHighlight
-              onpress={this.props.onpress}>
-                <View>
+              onPress={this.props.onPress}>
                     <Text>{this.props.item.title}</Text>
-                </View>
             </TouchableHighlight>
         );
     }
