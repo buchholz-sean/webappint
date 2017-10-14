@@ -1,14 +1,16 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { View, Text } from 'react-native';
+import { Button } from 'native-base';
 
 class SubmitButton extends React.Component {
     render() {
         return (
             <View>
-                <Button onPress = {this.props.onpress}
-                  title = {this.props.title} />
+                <Button full light onPress = {this.props.onpress}>
+                    <Text>{this.props.title}</Text>
+                </Button>
             </View>
         );
     }
