@@ -11,10 +11,10 @@ class ListEntry extends React.Component {
     renderImage(entryType) {
         // Render correct entry icon for corresponding entry types
         switch (entryType) {
-            // Cases provided with index and name of entry types (just in case)
+                // Cases provided with index and name of entry types (just in case)
             case 0:
             case 'Task':
-            // TODO: Render Complete vs. Incomplete tasks with visual feedback/different icon?
+                // TODO: Render Complete vs. Incomplete tasks with visual feedback/different icon?
                 return <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>;
                 break;
             case 1:
@@ -26,7 +26,7 @@ class ListEntry extends React.Component {
                 return <Image source={require('../assets/basic_book_pen.png')} style={styles.listIcon}/>
                 break;
             default:
-                return <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
+                return <Image source={require('../assets/basic_elaboration_calendar_empty.png')} style={styles.listIcon}/>
         }
     }
 
@@ -39,7 +39,7 @@ class ListEntry extends React.Component {
             : <ListItem icon style={styles.listEntry}>
                 <Left>{this.renderImage(this.props.item.entryType)}</Left>
                 <Text style={styles.listText}>{this.props.item.title}</Text>
-            </ListItem>
+            </ListItem>;
         return (
             <View>
                 {contents}
