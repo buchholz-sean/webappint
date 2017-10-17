@@ -8,7 +8,7 @@ import styles from '../styles/global';
 export default class MonthlyScreen extends React.Component {
     static navigationOptions = {
         tabBarLabel: 'Monthly Log',
-        tabBarIcon: ({tintColor}) => (<Image source={require('../assets/basic_elaboration_calendar_empty.png')} style={[
+        tabBarIcon: ({tintColor}) => (<Image source={require('../assets/basic_calendar.png')} style={[
             styles.tabIcon, {
                 tintColor: tintColor
             }
