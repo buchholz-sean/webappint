@@ -37,14 +37,14 @@ export default class DailyScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: []
+            data: []
         };
         // Database reference
         this.itemsRef = firebaseApp.database().ref();
     }
 
     componentDidMount() {
-        this.watchForItems(this.itemsRef);
+        this.listenForItems(this.itemsRef);
     }
 
     _renderItem(item) {
@@ -96,17 +96,43 @@ export default class DailyScreen extends React.Component {
         });
     }
 
-    watchForItems(itemsRef) {
+    listenForItems(itemsRef) {
+        var uniqueDates = new Set();
         // Listen for changes to database
         itemsRef.on('value', (snapshot) => {
             var items = [];
+            var data = [];
             // Push each item to front of items array
             snapshot.forEach((child) => {
                 items.unshift({title: child.val().title, date: child.val().date, entryType: child.val().entryType, _key: child.key});
+                // Add each unique date to Set
+                uniqueDates.add(child.val().date);
             });
+            // Loop through unique dates
+            for (let date of uniqueDates) {
+                // Add each unique date as item to front of data array...
+                data.unshift({
+                    title: moment(date, 'MMDDYY').calendar(null, {
+                        lastDay: '[Yesterday]',
+                        sameDay: '[Today]',
+                        lastWeek: '[Last] dddd',
+                        sameElse: 'L'
+                    }),
+                    entryType: 'Header'
+                })
+                // ...then add items matching that unique date
+                // by splicing in behind the date header
+                for (var item in items) {
+                    if (items.hasOwnProperty(item)) {
+                        if (items[item].date == date) {
+                            data.splice(1, 0, items[item]);
+                        };
+                    };
+                };
+            };
+            // Update data in Component state for List Component to render
             this.setState({
-                // Update state with entries
-                items: items
+                data: data
             });
         });
     }
@@ -120,7 +146,7 @@ export default class DailyScreen extends React.Component {
                     </Body>
                 </Header>
                 <Content>
-                    <List dataArray={this.state.items} renderRow={(item) => this._renderItem(item)}/>
+                    <List dataArray={this.state.data} renderRow={(item) => this._renderItem(item)}/>
                 </Content>
                 <SubmitButton title='Add Entry' onpress={this._addItem.bind(this)}/>
             </View>

@@ -8,7 +8,7 @@ import styles from '../styles/global';
 
 class ListEntry extends React.Component {
 
-    renderImage(entryType) {
+    _renderImage(entryType) {
         // Render correct entry icon for corresponding entry types
         switch (entryType) {
                 // Cases provided with index and name of entry types (just in case)
@@ -33,13 +33,18 @@ class ListEntry extends React.Component {
     render() {
         const contents = this.props.item.entryType == 0 || this.props.item.entryType == 'Task'
             ? <ListItem icon button onPress={this.props.onPress} style={styles.listEntry}>
-                    <Left>{this.renderImage(this.props.item.entryType)}</Left>
+                    <Left>{this._renderImage(this.props.item.entryType)}</Left>
                     <Text style={styles.listText}>{this.props.item.title}</Text>
                 </ListItem>
-            : <ListItem icon style={styles.listEntry}>
-                <Left>{this.renderImage(this.props.item.entryType)}</Left>
-                <Text style={styles.listText}>{this.props.item.title}</Text>
-            </ListItem>;
+            : (this.props.item.entryType == 3 || this.props.item.entryType == 'Header'
+                ? <ListItem itemDivider>
+                        <Left>{this._renderImage(this.props.item.entryType)}</Left>
+                        <Text>{this.props.item.title}</Text>
+                    </ListItem>
+                : <ListItem icon style={styles.listEntry}>
+                    <Left>{this._renderImage(this.props.item.entryType)}</Left>
+                    <Text style={styles.listText}>{this.props.item.title}</Text>
+                </ListItem>);
         return (
             <View>
                 {contents}
