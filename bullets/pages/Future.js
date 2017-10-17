@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
-import {Header, Body, Title, Content} from 'native-base';
+import {StyleSheet, Text, Image} from 'react-native';
+import {Header, Body, Title, Content, Container} from 'native-base';
 
 // Global styles
 import styles from '../styles/global';
@@ -16,7 +16,7 @@ export default class Future extends React.Component {
     };
     render() {
         return (
-            <View style={styles.container}>
+            <Container>
                 <Header>
                     <Body>
                         <Title>Future Log</Title>
@@ -25,7 +25,7 @@ export default class Future extends React.Component {
                 <Content>
                     <Text>Under Construction</Text>
                 </Content>
-            </View>
+            </Container>
         );
     }
 }
