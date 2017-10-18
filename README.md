@@ -2,6 +2,11 @@
 
 Assignments and project materials for WDD4416 Web Application Integration
 
+## Bullets App
+
+### trello
+[Bullets App Trello board](https://trello.com/b/Lgw8WnUL/bullets-app "Bullets App on Trello")
+
 ## Sean Buchholz
 
 ### slack (preferred)
