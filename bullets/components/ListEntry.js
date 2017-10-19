@@ -1,14 +1,24 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {StyleSheet, Image, View} from 'react-native';
-import {ListItem, Icon, Left, Text} from 'native-base';
+import {StyleSheet, Image} from 'react-native';
+import {
+    ListItem,
+    Body,
+    Button,
+    Icon,
+    Left,
+    Right,
+    Text,
+    Separator,
+    View
+} from 'native-base';
 
-import styles from '../styles/global';
+import colors from '../styles/variables';
 
 class ListEntry extends React.Component {
 
-    _renderImage(entryType) {
+    renderImage(entryType) {
         // Render correct entry icon for corresponding entry types
         switch (entryType) {
                 // Cases provided with index and name of entry types (just in case)
@@ -31,19 +41,31 @@ class ListEntry extends React.Component {
     }
 
     render() {
-        const contents = this.props.item.entryType == 0 || this.props.item.entryType == 'Task'
-            ? <ListItem icon button onPress={this.props.onPress} style={styles.listEntry}>
-                    <Left>{this._renderImage(this.props.item.entryType)}</Left>
-                    <Text style={styles.listText}>{this.props.item.title}</Text>
-                </ListItem>
-            : (this.props.item.entryType == 3 || this.props.item.entryType == 'Header'
-                ? <ListItem itemDivider>
-                        <Left>{this._renderImage(this.props.item.entryType)}</Left>
-                        <Text>{this.props.item.title}</Text>
+        const contents = this.props.item.entryType == 3 || this.props.item.entryType == 'Header'
+        // If Header item, render Separator...
+            ? <Separator style={styles.listSeparator}>
+                    <Text style={styles.listSeparatorText}>{this.props.item.title}</Text>
+                </Separator>
+            :
+            // ...otherwise, if Task item, render as touchable Task...
+            (this.props.item.entryType == 0 || this.props.item.entryType == 'Task'
+                ? <ListItem icon button onPress={this.props.onPress} style={styles.listEntry}>
+                        <Left>{this.renderImage(this.props.item.entryType)}</Left>
+                        <Body>
+                            <Text style={styles.listText}>{this.props.item.title}</Text>
+                        </Body>
                     </ListItem>
+                // ...otherwise, render as Note/Event
                 : <ListItem icon style={styles.listEntry}>
-                    <Left>{this._renderImage(this.props.item.entryType)}</Left>
-                    <Text style={styles.listText}>{this.props.item.title}</Text>
+                    <Left>{this.renderImage(this.props.item.entryType)}</Left>
+                    <Body>
+                        <Text style={styles.listText}>{this.props.item.title}</Text>
+                    </Body>
+                    <Right>
+                        <Button iconRight transparent dark onPress={this.props.onPress} style={styles.removeIcon}>
+                            <Icon name='ios-close'/>
+                        </Button>
+                    </Right>
                 </ListItem>);
         return (
             <View>
@@ -52,5 +74,22 @@ class ListEntry extends React.Component {
         );
     }
 }
+
+var styles = StyleSheet.create({
+    listIcon: {
+        width: 26,
+        height: 26
+    },
+    listSeparator: {
+        backgroundColor: colors.dividerColor,
+    },
+    listSeparatorText: {
+        color: colors.backgroundColor,
+        fontSize: 16
+    },
+    listText: {
+        fontSize: 16
+    }
+});
 
 module.exports = ListEntry;
