@@ -14,6 +14,7 @@ export default class MonthlyScreen extends React.Component {
             }
         ]}/>)
     };
+    // TODO: Monthly Log implementation...
     render() {
         return (
             <Container>

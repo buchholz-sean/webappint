@@ -14,6 +14,7 @@ export default class Future extends React.Component {
             }
         ]}/>)
     };
+    // TODO: Future Log implementation...
     render() {
         return (
             <Container>
