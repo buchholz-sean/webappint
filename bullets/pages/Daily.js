@@ -37,6 +37,7 @@ export default class DailyScreen extends React.Component {
     };
 
     constructor(props) {
+        // TODO: Change format of moment date to YYYYMMDD to allow for correct sorting over years
         super(props);
         this.state = {
             data: [],
@@ -110,6 +111,7 @@ export default class DailyScreen extends React.Component {
         if (item.entryType == 'Task' && !item.completed) {
             // Update item date to today's date
             item.date = this.state.today;
+            this.itemsRef.child(item._key).update({date: item.date});
         }
     }
 
@@ -128,12 +130,20 @@ export default class DailyScreen extends React.Component {
                 this.migrateTask(items[i]);
                 // ...then add each unique date to Set
                 uniqueDates.add(items[i].date);
-            }
-            // Loop through unique dates
+            };
+            // Put unique dates into array to sort
+            // ES6 Set is an unordered collection of Objects and can't be sorted
+            // This workaround ensures date headers display in the correct order
+            var sortedDates = [];
             for (let date of uniqueDates) {
+                sortedDates.push(date);
+            }
+            sortedDates.sort();
+            // Loop through sorted array of unique dates
+            for (var i = 0; i < sortedDates.length; i++) {
                 // Add each unique date as item to front of data array...
                 data.unshift({
-                    title: moment(date, 'MMDDYY').calendar(null, {
+                    title: moment(sortedDates[i], 'MMDDYY').calendar(null, {
                         lastDay: '[Yesterday]',
                         sameDay: '[Today]',
                         lastWeek: '[Last] dddd',
@@ -144,7 +154,7 @@ export default class DailyScreen extends React.Component {
                 // ...then add items matching that unique date by splicing in behind the date header
                 for (var item in items) {
                     if (items.hasOwnProperty(item)) {
-                        if (items[item].date == date) {
+                        if (items[item].date == sortedDates[i]) {
                             data.splice(1, 0, items[item]);
                         };
                     };
