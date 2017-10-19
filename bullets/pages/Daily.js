@@ -1,13 +1,15 @@
 import React from 'react';
-import {StyleSheet, View, AlertIOS, Image} from 'react-native';
+import {StyleSheet, AlertIOS, Image} from 'react-native';
 import {
+    Container,
     Header,
     Body,
     Title,
     Content,
     List,
     ActionSheet,
-    Text
+    Text,
+    View
 } from 'native-base';
 
 // Import momentJS for pretty Date/Time objects
@@ -37,7 +39,8 @@ export default class DailyScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: [],
+            today: moment().format('MMDDYY')
         };
         // Database reference
         this.itemsRef = firebaseApp.database().ref();
@@ -47,14 +50,19 @@ export default class DailyScreen extends React.Component {
         this.listenForItems(this.itemsRef);
     }
 
-    _renderItem(item) {
+    renderItem(item) {
         const onPress = () => {
-            // IOS prompt to mark Task entries complete (remove from list)
-            // TODO: Provide 'Remove' functionality for Notes/Events
-            // TODO: Provide visual feedback on complete items instead of remove
-            AlertIOS.prompt('Mark Item Complete?', null, [
+            // IOS prompt to mark Task entries complete or remove Note/Event entries
+            var msg = item.entryType == 'Task'
+                ? 'Mark Task Complete?'
+                : 'Remove ' + item.entryType + '?';
+            var buttonText = item.entryType == 'Task'
+                ? 'Complete'
+                : 'Remove';
+            AlertIOS.prompt(msg, null, [
                 {
-                    text: 'Complete',
+                    text: buttonText,
+                    // TODO: Provide visual feedback (strikethru) on complete items instead of remove
                     onPress: (text) => this.itemsRef.child(item._key).remove()
                 }, {
                     text: 'Cancel',
@@ -65,10 +73,10 @@ export default class DailyScreen extends React.Component {
         return (<ListEntry item={item} onPress={onPress}/>);
     }
 
-    _addItem() {
+    addItem() {
         // Configuration for ActionSheet
-        var BUTTONS = ['Task', 'Event', 'Note', 'Cancel'];
-        var CANCELINDEX = 3;
+        const BUTTONS = ['Task', 'Event', 'Note', 'Cancel'];
+        const CANCELINDEX = 3;
         ActionSheet.show({
             options: BUTTONS,
             cancelButtonIndex: CANCELINDEX,
@@ -76,6 +84,7 @@ export default class DailyScreen extends React.Component {
         }, buttonIndex => {
             // If user selects option other than Cancel
             if (buttonIndex != CANCELINDEX) {
+                // TODO: Multiline input prompt (with 'react-native-prompt'?)
                 // IOS prompt to add new entry of selected type
                 AlertIOS.prompt('New ' + BUTTONS[buttonIndex], null, [
                     {
@@ -96,6 +105,14 @@ export default class DailyScreen extends React.Component {
         });
     }
 
+    migrateTask(item) {
+        // Only auto-migrate Task entries--not Notes or Events
+        if (item.entryType == 'Task' && !item.completed) {
+            // Update item date to today's date
+            item.date = this.state.today;
+        }
+    }
+
     listenForItems(itemsRef) {
         var uniqueDates = new Set();
         // Listen for changes to database
@@ -104,10 +121,14 @@ export default class DailyScreen extends React.Component {
             var data = [];
             // Push each item to front of items array
             snapshot.forEach((child) => {
-                items.unshift({title: child.val().title, date: child.val().date, entryType: child.val().entryType, _key: child.key});
-                // Add each unique date to Set
-                uniqueDates.add(child.val().date);
+                items.unshift({title: child.val().title, date: child.val().date, entryType: child.val().entryType, completed: child.val().completed, _key: child.key});
             });
+            // If any incomplete tasks left over from previous days, auto-migrate to today...
+            for (var i = 0; i < items.length; i++) {
+                this.migrateTask(items[i]);
+                // ...then add each unique date to Set
+                uniqueDates.add(items[i].date);
+            }
             // Loop through unique dates
             for (let date of uniqueDates) {
                 // Add each unique date as item to front of data array...
@@ -120,8 +141,7 @@ export default class DailyScreen extends React.Component {
                     }),
                     entryType: 'Header'
                 })
-                // ...then add items matching that unique date
-                // by splicing in behind the date header
+                // ...then add items matching that unique date by splicing in behind the date header
                 for (var item in items) {
                     if (items.hasOwnProperty(item)) {
                         if (items[item].date == date) {
@@ -131,25 +151,23 @@ export default class DailyScreen extends React.Component {
                 };
             };
             // Update data in Component state for List Component to render
-            this.setState({
-                data: data
-            });
+            this.setState({data: data});
         });
     }
 
     render() {
         return (
-            <View style={styles.container}>
+            <Container>
                 <Header>
                     <Body>
                         <Title>Daily Log</Title>
                     </Body>
                 </Header>
                 <Content>
-                    <List dataArray={this.state.data} renderRow={(item) => this._renderItem(item)}/>
+                    <List dataArray={this.state.data} renderRow={(item) => this.renderItem(item)}/>
                 </Content>
-                <SubmitButton title='Add Entry' onpress={this._addItem.bind(this)}/>
-            </View>
+                <SubmitButton title='Add Entry' onPress={this.addItem.bind(this)}/>
+            </Container>
         )
     }
 }
