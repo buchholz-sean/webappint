@@ -7,6 +7,11 @@ import DailyScreen from './pages/Daily';
 import MonthlyScreen from './pages/Monthly';
 import FutureScreen from './pages/Future';
 
+import colors from './styles/variables';
+
+
+// TODO: Onboarding/tutorial
+// TODO: OAuth sign in with Firebase
 const Screens = TabNavigator({
     Daily: {
         screen: DailyScreen
@@ -19,12 +24,12 @@ const Screens = TabNavigator({
     }
 }, {
     tabBarOptions: {
-        activeTintColor: '#3b5998',
+        activeTintColor: colors.activeTintColor,
         labelStyle: {
             fontSize: 12
         },
         style: {
-            backgroundColor: '#fff'
+            backgroundColor: colors.backgroundColor
         }
     }
 });
@@ -36,7 +41,7 @@ export default class App extends React.Component {
     render() {
         return (
             <Root>
-                <Screens/>
+                <Screens />
             </Root>
         );
     }
