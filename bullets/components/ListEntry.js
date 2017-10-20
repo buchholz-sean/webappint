@@ -23,40 +23,26 @@ class ListEntry extends React.Component {
         switch (entryType) {
             case 0:
             case 'Task':
-                if (this.props.item.completed) {
-                    return <ListItem icon style={styles.listEntry}>
-                        <Left>
-                            <Button transparent dark onPress={this.props.onPress}>
-                                <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
-                            </Button>
-                        </Left>
-                        <Body>
-                            <Text style={styles.listText,
-                            styles.listTextComplete}>{this.props.item.title}</Text>
-                        </Body>
-                        <Right>
-                            <Button transparent dark style={styles.removeIcon} onPress={this.props.clearItem}>
-                                <Icon name='ios-close'/>
-                            </Button>
-                        </Right>
-                    </ListItem>;
-                } else {
-                    return <ListItem icon style={styles.listEntry}>
-                        <Left>
-                            <Button transparent dark onPress={this.props.onPress}>
-                                <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
-                            </Button>
-                        </Left>
-                        <Body>
-                            <Text style={styles.listText}>{this.props.item.title}</Text>
-                        </Body>
-                        <Right>
-                            <Button transparent dark style={styles.removeIcon} onPress={this.props.clearItem}>
-                                <Icon name='ios-close'/>
-                            </Button>
-                        </Right>
-                    </ListItem>;
-                };
+                var completionStatus = this.props.item.completed;
+                var taskText = completionStatus
+                    ? <Text style={styles.listText,
+                        styles.listTextComplete}>{this.props.item.title}</Text>
+                    : <Text style={styles.listText}>{this.props.item.title}</Text>;
+                return <ListItem icon style={styles.listEntry}>
+                    <Left>
+                        <Button transparent dark onPress={this.props.toggleComplete}>
+                            <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
+                        </Button>
+                    </Left>
+                    <Body>
+                        {taskText}
+                    </Body>
+                    <Right>
+                        <Button transparent dark style={styles.removeIcon} onPress={this.props.clearItem}>
+                            <Icon name='ios-close'/>
+                        </Button>
+                    </Right>
+                </ListItem>;
                 break;
             case 1:
             case 'Event':
