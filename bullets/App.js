@@ -9,7 +9,6 @@ import FutureScreen from './pages/Future';
 
 import colors from './styles/variables';
 
-
 // TODO: Onboarding/tutorial
 // TODO: OAuth sign in with Firebase
 const Screens = TabNavigator({
@@ -41,7 +40,7 @@ export default class App extends React.Component {
     render() {
         return (
             <Root>
-                <Screens />
+                <Screens/>
             </Root>
         );
     }
