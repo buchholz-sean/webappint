@@ -15,15 +15,17 @@ import {
 // Import momentJS for pretty Date/Time objects
 import moment from 'moment';
 
-// Import custom Components
+// Import database configuration
+import firebaseApp from '../firebaseConfig';
+
+// Require custom Components
 const ListEntry = require('../components/ListEntry');
 const SubmitButton = require('../components/SubmitButton');
 
-// Global styles
+// Import Global styles
 import styles from '../styles/global';
 
-import firebaseApp from '../firebaseConfig';
-
+// Begin Component
 export default class DailyScreen extends React.Component {
 
     // Options for Tab Navigation
