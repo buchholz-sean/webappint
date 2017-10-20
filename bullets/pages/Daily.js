@@ -52,26 +52,27 @@ export default class DailyScreen extends React.Component {
     }
 
     renderItem(item) {
-        const onPress = () => {
-            // IOS prompt to mark Task entries complete or remove Note/Event entries
-            var msg = item.entryType == 'Task'
-                ? 'Mark Task Complete?'
-                : 'Remove ' + item.entryType + '?';
-            var buttonText = item.entryType == 'Task'
-                ? 'Complete'
-                : 'Remove';
-            AlertIOS.prompt(msg, null, [
-                {
-                    text: buttonText,
-                    // TODO: Provide visual feedback (strikethru) on complete items instead of remove
-                    onPress: (text) => this.itemsRef.child(item._key).remove()
-                }, {
-                    text: 'Cancel',
-                    onPress: (text) => console.log('Canceled')
-                }
-            ], 'default')
-        }
-        return (<ListEntry item={item} onPress={onPress}/>);
+        // IOS prompt to mark Task entries complete or remove Note/Event entries
+        return (<ListEntry item={item} toggleComplete={() => {this.toggleComplete(item)}} clearItem={() => {this.clearItem(item)}}/>);
+    }
+
+    clearItem(item) {
+        AlertIOS.alert('Delete ' + item.entryType + '?', null, [
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: (text) => this.itemsRef.child(item._key).remove()
+            }, {
+                text: 'Cancel',
+                style: 'cancel',
+                onPress: (text) => console.log('Canceled')
+            }
+        ])
+    }
+
+    toggleComplete(item) {
+        item.completed = !item.completed;
+        this.itemsRef.child(item._key).update({completed: item.completed});
     }
 
     addItem() {
@@ -99,6 +100,7 @@ export default class DailyScreen extends React.Component {
                         }
                     }, {
                         text: 'Cancel',
+                        style: 'cancel',
                         onPress: (text) => console.log('Canceled')
                     }
                 ], 'plain-text');
@@ -107,15 +109,16 @@ export default class DailyScreen extends React.Component {
     }
 
     migrateTask(item) {
-        // Only auto-migrate Task entries--not Notes or Events
+        // Only auto-migrate Task entries (not Notes or Events)
         if (item.entryType == 'Task' && !item.completed) {
-            // Update item date to today's date
+            // Update Task date to today's date
             item.date = this.state.today;
             this.itemsRef.child(item._key).update({date: item.date});
         }
     }
 
     listenForItems(itemsRef) {
+        // TODO: Clean up Set-to-sorted-array transition with spread operators
         var uniqueDates = new Set();
         // Listen for changes to database
         itemsRef.on('value', (snapshot) => {
