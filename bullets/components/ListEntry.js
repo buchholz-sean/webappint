@@ -18,55 +18,84 @@ import colors from '../styles/variables';
 
 class ListEntry extends React.Component {
 
-    renderImage(entryType) {
-        // Render correct entry icon for corresponding entry types
+    renderEntry(entryType) {
+        // Render Tasks, Events/Notes, and Separators with corresponding props, buttons, and images
         switch (entryType) {
-                // Cases provided with index and name of entry types (just in case)
             case 0:
             case 'Task':
-                // TODO: Render Complete vs. Incomplete tasks with visual feedback/different icon?
-                return <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>;
-                break;
-            case 1:
-            case 'Event':
-                return <Image source={require('../assets/basic_bookmark.png')} style={styles.listIcon}/>
-                break;
-            case 2:
-            case 'Note':
-                return <Image source={require('../assets/basic_book_pen.png')} style={styles.listIcon}/>
-                break;
-            default:
-                return <Image source={require('../assets/basic_elaboration_calendar_empty.png')} style={styles.listIcon}/>
-        }
-    }
-
-    render() {
-        const contents = this.props.item.entryType == 3 || this.props.item.entryType == 'Header'
-        // If Header item, render Separator...
-            ? <Separator style={styles.listSeparator}>
-                    <Text style={styles.listSeparatorText}>{this.props.item.title}</Text>
-                </Separator>
-            :
-            // ...otherwise, if Task item, render as touchable Task...
-            (this.props.item.entryType == 0 || this.props.item.entryType == 'Task'
-                ? <ListItem icon button onPress={this.props.onPress} style={styles.listEntry}>
-                        <Left>{this.renderImage(this.props.item.entryType)}</Left>
+                if (this.props.item.completed) {
+                    return <ListItem icon style={styles.listEntry}>
+                        <Left>
+                            <Button transparent dark onPress={this.props.onPress}>
+                                <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
+                            </Button>
+                        </Left>
+                        <Body>
+                            <Text style={styles.listText,
+                            styles.listTextComplete}>{this.props.item.title}</Text>
+                        </Body>
+                        <Right>
+                            <Button transparent dark style={styles.removeIcon} onPress={this.props.clearItem}>
+                                <Icon name='ios-close'/>
+                            </Button>
+                        </Right>
+                    </ListItem>;
+                } else {
+                    return <ListItem icon style={styles.listEntry}>
+                        <Left>
+                            <Button transparent dark onPress={this.props.onPress}>
+                                <Image source={require('../assets/arrows_check.png')} style={styles.listIcon}/>
+                            </Button>
+                        </Left>
                         <Body>
                             <Text style={styles.listText}>{this.props.item.title}</Text>
                         </Body>
-                    </ListItem>
-                // ...otherwise, render as Note/Event
-                : <ListItem icon style={styles.listEntry}>
-                    <Left>{this.renderImage(this.props.item.entryType)}</Left>
+                        <Right>
+                            <Button transparent dark style={styles.removeIcon} onPress={this.props.clearItem}>
+                                <Icon name='ios-close'/>
+                            </Button>
+                        </Right>
+                    </ListItem>;
+                };
+                break;
+            case 1:
+            case 'Event':
+                return <ListItem icon style={styles.listEntry}>
+                    <Left><Image source={require('../assets/basic_bookmark.png')} style={styles.listIcon}/></Left>
                     <Body>
                         <Text style={styles.listText}>{this.props.item.title}</Text>
                     </Body>
                     <Right>
-                        <Button iconRight transparent dark onPress={this.props.onPress} style={styles.removeIcon}>
+                        <Button iconRight transparent dark onPress={this.props.clearItem} style={styles.removeIcon}>
                             <Icon name='ios-close'/>
                         </Button>
                     </Right>
-                </ListItem>);
+                </ListItem>;
+                break;
+            case 2:
+            case 'Note':
+                return <ListItem icon style={styles.listEntry}>
+                    <Left><Image source={require('../assets/basic_book_pen.png')} style={styles.listIcon}/></Left>
+                    <Body>
+                        <Text style={styles.listText}>{this.props.item.title}</Text>
+                    </Body>
+                    <Right>
+                        <Button iconRight transparent dark onPress={this.props.clearItem} style={styles.removeIcon}>
+                            <Icon name='ios-close'/>
+                        </Button>
+                    </Right>
+                </ListItem>;
+                break;
+            default:
+                return <Separator style={styles.listSeparator}>
+                    <Text style={styles.listSeparatorText}>{this.props.item.title}</Text>
+                </Separator>;
+        }
+    }
+
+    render() {
+        const contents = this.renderEntry(this.props.item.entryType);
+
         return (
             <View>
                 {contents}
@@ -81,7 +110,7 @@ var styles = StyleSheet.create({
         height: 26
     },
     listSeparator: {
-        backgroundColor: colors.dividerColor,
+        backgroundColor: colors.dividerColor
     },
     listSeparatorText: {
         color: colors.backgroundColor,
@@ -89,6 +118,9 @@ var styles = StyleSheet.create({
     },
     listText: {
         fontSize: 16
+    },
+    listTextComplete: {
+        textDecorationLine: 'line-through'
     }
 });
 
