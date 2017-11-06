@@ -75,7 +75,7 @@ Code styling for Bullets is based on the AirBnB style guide, with some modificat
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
 ## Versioning
 
@@ -84,16 +84,11 @@ Bullets uses [SemVer](http://semver.org/) for versioning. For the versions avail
 ## Authors
 
 * **Sean Buchholz** - *Initial work*
-<!--
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project. -->
+
+See also the list of [contributors](https://github.com/seanbuchholz/webappint/graphs/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-<!-- ## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc -->
 
