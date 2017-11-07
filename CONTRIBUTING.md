@@ -33,7 +33,7 @@ If a maintainer asks you to "rebase" your PR, they're saying that a lot of code 
 
 1. Fork the code base (currently, fork from `master`--in the future contributors will fork from a `development` branch)
 2. Create a new branch for your feature
-3. Ensure that your code meets our [Style Guide](https://github.com/seanbuchholz/webappint/style-guide) requirements
+3. Ensure that your code meets our [Style Guide](https://github.com/seanbuchholz/webappint#style-guide) requirements
 4. When you're finished, submit a Pull Request to get feedback from the team and the community
 5. Make any requested changes, and a maintainer will decide whether to merge your code in or close the PR
 
